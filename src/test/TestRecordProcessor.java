@@ -16,7 +16,7 @@ public class TestRecordProcessor {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		StringBuffer fileContents = new StringBuffer();
-		Scanner fileInput = new Scanner(new File("expected1.txt"));
+		Scanner fileInput = new Scanner(new File("expectedOutput.txt"));
 		while(fileInput.hasNextLine())
 			fileContents.append(fileInput.nextLine() + "\n");
 		expectedFromData1 = fileContents.toString();
@@ -25,16 +25,16 @@ public class TestRecordProcessor {
 
 	@Test
 	public void testFileData1() {
-		assertEquals(expectedFromData1, RecordProcessor.processFile("data1.txt"));
+		assertEquals(expectedFromData1, RecordProcessor.processFile("inputData1.txt"));
 	}
 
 	@Test
 	public void testFileData2() {
-		assertEquals(null, RecordProcessor.processFile("data2.txt"));
+		assertEquals(null, RecordProcessor.processFile("inputData2.txt"));
 	}
 
 	@Test
 	public void testFileData3() {
-		assertEquals(null, RecordProcessor.processFile("data3.txt"));
+		assertEquals(null, RecordProcessor.processFile("inputData3.txt"));
 	}
 }

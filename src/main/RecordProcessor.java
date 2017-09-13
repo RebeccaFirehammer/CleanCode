@@ -13,17 +13,17 @@ public class RecordProcessor {
 	private static int [] age;
 	private static String [] employeeType;
 	private static double [] pay;
-	private StringBuffer stringBuffer = new StringBuffer();
-	private Scanner scanner;
+	private static StringBuffer stringBuffer = new StringBuffer();
+	private static Scanner scanner;
 		
-	public void readInFile(String fileInput){
+	public static void readInFile(String fileInput){
 		try {
 			scanner = new Scanner(new File(fileInput));
 		} catch (FileNotFoundException exception) {
 			System.err.println(exception.getMessage());
 		}
 	}
-	public void assignValues(){
+	public static void assignValues(){
 		int inputLength = 0;
 		
 		while(scanner.hasNextLine()) {
@@ -40,14 +40,10 @@ public class RecordProcessor {
 
 		scanner.close();
 	}
-	public String processFile(String fileInput){
-		String output = "";
+	
+	public static String processFile(String fileInput) {
 		readInFile(fileInput);
 		assignValues();
-		return output;
-	}
-	
-	public String oldProcessFile(String fileInput) {
 //		StringBuffer stringBuffer = new StringBuffer();
 //		Scanner scanner = null;
 //		try {
@@ -56,7 +52,7 @@ public class RecordProcessor {
 //			System.err.println(e.getMessage());
 //			return null;
 //		}
-		
+//		
 //		int c = 0;
 //		while(scanner.hasNextLine()) {
 //			String l = scanner.nextLine();
@@ -69,8 +65,8 @@ public class RecordProcessor {
 //		age = new int[c];
 //		employeeType = new String[c];
 //		pay = new double[c];
-//
-//		scanner.close();
+
+		scanner.close();
 		try {
 			scanner = new Scanner(new File(fileInput));
 		} catch (FileNotFoundException e) {
