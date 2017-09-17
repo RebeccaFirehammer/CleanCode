@@ -15,6 +15,7 @@ public class RecordProcessor {
 	private static double [] pay;
 	private static StringBuffer stringBuffer = new StringBuffer();
 	private static Scanner scanner;
+	private static int count = 0;
 		
 	public static void readInFile(String fileInput){
 		try {
@@ -23,63 +24,37 @@ public class RecordProcessor {
 			System.err.println(exception.getMessage());
 		}
 	}
-	public static void assignValues(){
+	public static int getFileLength(){
 		int inputLength = 0;
 		
 		while(scanner.hasNextLine()) {
 			String lineInput = scanner.nextLine();
 			if(lineInput.length() > 0)
-				inputLength++;
+				inputLength++;		
 		}
-
+		scanner.close();
+		return inputLength;
+	}
+	public static void assignEmployeeValues(){
+		int inputLength = getFileLength();
 		firstName = new String[inputLength];
 		lastName = new String[inputLength];
 		age = new int[inputLength];
 		employeeType = new String[inputLength];
 		pay = new double[inputLength];
-
-		scanner.close();
 	}
 	
 	public static String processFile(String fileInput) {
 		readInFile(fileInput);
-		assignValues();
-//		StringBuffer stringBuffer = new StringBuffer();
-//		Scanner scanner = null;
-//		try {
-//			scanner = new Scanner(new File(fileInput));
-//		} catch (FileNotFoundException e) {
-//			System.err.println(e.getMessage());
-//			return null;
-//		}
-//		
-//		int c = 0;
-//		while(scanner.hasNextLine()) {
-//			String l = scanner.nextLine();
-//			if(l.length() > 0)
-//				c++;
-//		}
-//
-//		firstName = new String[c];
-//		lastName = new String[c];
-//		age = new int[c];
-//		employeeType = new String[c];
-//		pay = new double[c];
+		assignEmployeeValues();
+		
+		readInFile(fileInput);
 
-		scanner.close();
-		try {
-			scanner = new Scanner(new File(fileInput));
-		} catch (FileNotFoundException e) {
-			System.err.println(e.getMessage());
-			return null;
-		}
-
-		int count = 0;
+		count = 0;
 		while(scanner.hasNextLine()) {
-			String l = scanner.nextLine();
-			if(l.length() > 0) {
-				
-				String [] words = l.split(",");
+			String lineInput = scanner.nextLine();
+			if(lineInput.length() > 0) {
+				String [] words = lineInput.split(",");
 
 				int c2 = 0; 
 				for(;c2 < lastName.length; c2++) {
