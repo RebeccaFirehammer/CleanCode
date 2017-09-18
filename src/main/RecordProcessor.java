@@ -13,7 +13,7 @@ public class RecordProcessor {
 	private static int [] age;
 	private static String [] employeeType;
 	private static double [] pay;
-	private static StringBuffer stringBuffer = new StringBuffer();
+	private static StringBuffer stringBufferOutput = new StringBuffer();
 	private static Scanner scanner;
 	
 	private static int totalEmployeeAge = 0;
@@ -84,10 +84,10 @@ public class RecordProcessor {
 	}
 	
 	public static void printEmployeeStats() {
-		stringBuffer.append(String.format("\nAverage age:         %12.1f\n", getAverageEmployeeAge()));
-		stringBuffer.append(String.format("Average commission:  $%12.2f\n", getAverageCommissionPay()));
-		stringBuffer.append(String.format("Average hourly wage: $%12.2f\n", getAverageHourlyPay()));
-		stringBuffer.append(String.format("Average salary:      $%12.2f\n", getAverageSalaryPay()));
+		stringBufferOutput.append(String.format("\nAverage age:         %12.1f\n", getAverageEmployeeAge()));
+		stringBufferOutput.append(String.format("Average commission:  $%12.2f\n", getAverageCommissionPay()));
+		stringBufferOutput.append(String.format("Average hourly wage: $%12.2f\n", getAverageHourlyPay()));
+		stringBufferOutput.append(String.format("Average salary:      $%12.2f\n", getAverageSalaryPay()));
 	}
 	
 	public static void alphabetizeEmployeesByLastname(int recordCount, int employeeNum){
@@ -120,20 +120,20 @@ public class RecordProcessor {
 		assignEmployeeValues(employeeNum, employeeValue);		
 	}
 	public static void printRows(){
-		stringBuffer.append(String.format("# of people imported: %d\n", firstName.length));
+		stringBufferOutput.append(String.format("# of people imported: %d\n", firstName.length));
 				
-		stringBuffer.append(String.format("\n%-30s %s  %-12s %12s\n", "Person Name", "Age", "Emp. Type", "Pay"));
+		stringBufferOutput.append(String.format("\n%-30s %s  %-12s %12s\n", "Person Name", "Age", "Emp. Type", "Pay"));
 		for(int i = 0; i < 30; i++)
-			stringBuffer.append(String.format("-"));
-		stringBuffer.append(String.format(" ---  "));
+			stringBufferOutput.append(String.format("-"));
+		stringBufferOutput.append(String.format(" ---  "));
 		for(int i = 0; i < 12; i++)
-			stringBuffer.append(String.format("-"));
-		stringBuffer.append(String.format(" "));
+			stringBufferOutput.append(String.format("-"));
+		stringBufferOutput.append(String.format(" "));
 		for(int i = 0; i < 12; i++)
-			stringBuffer.append(String.format("-"));
-		stringBuffer.append(String.format("\n"));	
+			stringBufferOutput.append(String.format("-"));
+		stringBufferOutput.append(String.format("\n"));	
 		for(int i = 0; i < firstName.length; i++) {
-			stringBuffer.append(String.format("%-30s %-3d  %-12s $%12.2f\n", firstName[i] + " " + lastName[i], age[i]
+			stringBufferOutput.append(String.format("%-30s %-3d  %-12s $%12.2f\n", firstName[i] + " " + lastName[i], age[i]
 			, employeeType[i], pay[i]));
 		}
 	}
@@ -155,18 +155,29 @@ public class RecordProcessor {
 			Set<String> set = hm.keySet();
 			for(String str : set) {
 				if(hm.get(str) > 1) {
-					stringBuffer.append(String.format("%s, # people with this name: %d\n", str, hm.get(str)));
+					stringBufferOutput.append(String.format("%s, # people with this name: %d\n", str, hm.get(str)));
 				}
 			}
 		} else { 
-			stringBuffer.append(String.format("All first names are unique"));
+			stringBufferOutput.append(String.format("All first names are unique"));
 		}
+	}
+	public static void printMultipleFirstNames(){
+		HashMap<String, Integer> firstNameHashMap = createMap(firstName);
+
+		stringBufferOutput.append(String.format("\nFirst names with more than one person sharing it:\n"));
+		compareMapToArray(firstNameHashMap, firstName);
+	}
+	public static void printMultipleLastnames(){
+		HashMap<String, Integer> lastNameHashMap = createMap(lastName);
+
+		stringBufferOutput.append(String.format("\nLast names with more than one person sharing it:\n"));
+		compareMapToArray(lastNameHashMap, lastName);
 	}
 	
 	public static String processFile(String fileInput) {
 		readInFile(fileInput);
 		initializeEmployeeValues();
-		
 		readInFile(fileInput);
 		try{
 			int recordCount = 0;
@@ -193,20 +204,12 @@ public class RecordProcessor {
 		printRows();
 		getEmployeeStats();
 		printEmployeeStats();
-		
-		HashMap<String, Integer> hm = createMap(firstName);
-
-		stringBuffer.append(String.format("\nFirst names with more than one person sharing it:\n"));
-		compareMapToArray(hm, firstName);
-
-		HashMap<String, Integer> hm2 = createMap(lastName);
-
-		stringBuffer.append(String.format("\nLast names with more than one person sharing it:\n"));
-		compareMapToArray(hm2, lastName);
+		printMultipleFirstNames();
+		printMultipleLastnames();
 		
 		//close the file
 		scanner.close();
 		
-		return stringBuffer.toString();
+		return stringBufferOutput.toString();
 	}
 }
