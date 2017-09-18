@@ -102,8 +102,8 @@ public class RecordProcessor {
 	public static void assignEmployeeValues(int employeeNum, String [] employeeValue){
 		firstName[employeeNum] = employeeValue[0];
 		lastName[employeeNum] = employeeValue[1];
-		employeeType[employeeNum] = employeeValue[3];
 		age[employeeNum] = Integer.parseInt(employeeValue[2]);
+		employeeType[employeeNum] = employeeValue[3];
 		pay[employeeNum] = Double.parseDouble(employeeValue[4]);
 	}
 	public static void siftLastnames(int recordCount, String [] employeeValue ){
@@ -118,6 +118,24 @@ public class RecordProcessor {
 			}
 		}	
 		assignEmployeeValues(employeeNum, employeeValue);		
+	}
+	public static void printRows(){
+		stringBuffer.append(String.format("# of people imported: %d\n", firstName.length));
+				
+		stringBuffer.append(String.format("\n%-30s %s  %-12s %12s\n", "Person Name", "Age", "Emp. Type", "Pay"));
+		for(int i = 0; i < 30; i++)
+			stringBuffer.append(String.format("-"));
+		stringBuffer.append(String.format(" ---  "));
+		for(int i = 0; i < 12; i++)
+			stringBuffer.append(String.format("-"));
+		stringBuffer.append(String.format(" "));
+		for(int i = 0; i < 12; i++)
+			stringBuffer.append(String.format("-"));
+		stringBuffer.append(String.format("\n"));	
+		for(int i = 0; i < firstName.length; i++) {
+			stringBuffer.append(String.format("%-30s %-3d  %-12s $%12.2f\n", firstName[i] + " " + lastName[i], age[i]
+			, employeeType[i], pay[i]));
+		}
 	}
 	
 	public static String processFile(String fileInput) {
@@ -148,25 +166,7 @@ public class RecordProcessor {
 			return null;
 		}
 		
-		//print the rows
-		stringBuffer.append(String.format("# of people imported: %d\n", firstName.length));
-		
-		stringBuffer.append(String.format("\n%-30s %s  %-12s %12s\n", "Person Name", "Age", "Emp. Type", "Pay"));
-		for(int i = 0; i < 30; i++)
-			stringBuffer.append(String.format("-"));
-		stringBuffer.append(String.format(" ---  "));
-		for(int i = 0; i < 12; i++)
-			stringBuffer.append(String.format("-"));
-		stringBuffer.append(String.format(" "));
-		for(int i = 0; i < 12; i++)
-			stringBuffer.append(String.format("-"));
-		stringBuffer.append(String.format("\n"));
-		
-		for(int i = 0; i < firstName.length; i++) {
-			stringBuffer.append(String.format("%-30s %-3d  %-12s $%12.2f\n", firstName[i] + " " + lastName[i], age[i]
-				, employeeType[i], pay[i]));
-		}
-		
+		printRows();
 		getEmployeeStats();
 		printEmployeeStats();
 		
