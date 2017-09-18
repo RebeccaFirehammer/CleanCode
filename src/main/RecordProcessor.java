@@ -15,7 +15,6 @@ public class RecordProcessor {
 	private static double [] pay;
 	private static StringBuffer stringBuffer = new StringBuffer();
 	private static Scanner scanner;
-	private static int count = 0;
 		
 	public static void readInFile(String fileInput){
 		try {
@@ -24,7 +23,7 @@ public class RecordProcessor {
 			System.err.println(exception.getMessage());
 		}
 	}
-	public static int getFileLength(){
+	public static int readFileValues(){
 		int inputLength = 0;
 		
 		while(scanner.hasNextLine()) {
@@ -35,34 +34,36 @@ public class RecordProcessor {
 		scanner.close();
 		return inputLength;
 	}
-	public static void assignEmployeeValues(){
-		int inputLength = getFileLength();
+	public static void initializeEmployeeValues(){
+		int inputLength = readFileValues();
 		firstName = new String[inputLength];
 		lastName = new String[inputLength];
 		age = new int[inputLength];
 		employeeType = new String[inputLength];
 		pay = new double[inputLength];
 	}
+	public static void recordExists(){
+		
+	}
 	
 	public static String processFile(String fileInput) {
 		readInFile(fileInput);
-		assignEmployeeValues();
+		initializeEmployeeValues();
 		
 		readInFile(fileInput);
 
-		count = 0;
+		int recordCount = 0;
 		while(scanner.hasNextLine()) {
 			String lineInput = scanner.nextLine();
 			if(lineInput.length() > 0) {
-				String [] words = lineInput.split(",");
-
-				int c2 = 0; 
-				for(;c2 < lastName.length; c2++) {
-					if(lastName[c2] == null)
+				String [] employeeValue = lineInput.split(",");
+				int employeeNum;
+				
+				for(employeeNum = 0; employeeNum < lastName.length; employeeNum++) {
+					if(lastName[employeeNum] == null)
 						break;
-					
-					if(lastName[c2].compareTo(words[1]) > 0) {
-						for(int i = count; i > c2; i--) {
+					if(lastName[employeeNum].compareTo(employeeValue[1]) > 0) {
+						for(int i = recordCount; i > employeeNum; i--) {
 							firstName[i] = firstName[i - 1];
 							lastName[i] = lastName[i - 1];
 							age[i] = age[i - 1];
@@ -73,24 +74,23 @@ public class RecordProcessor {
 					}
 				}
 				
-				firstName[c2] = words[0];
-				lastName[c2] = words[1];
-				employeeType[c2] = words[3];
+				firstName[employeeNum] = employeeValue[0];
+				lastName[employeeNum] = employeeValue[1];
+				employeeType[employeeNum] = employeeValue[3];
 
 				try {
-					age[c2] = Integer.parseInt(words[2]);
-					pay[c2] = Double.parseDouble(words[4]);
+					age[employeeNum] = Integer.parseInt(employeeValue[2]);
+					pay[employeeNum] = Double.parseDouble(employeeValue[4]);
 				} catch(Exception e) {
 					System.err.println(e.getMessage());
 					scanner.close();
 					return null;
 				}
 				
-				count++;
+				recordCount++;
 			}
 		}
-		
-		if(count == 0) {
+		if(recordCount == 0) {
 			System.err.println("No records found in data file");
 			scanner.close();
 			return null;
