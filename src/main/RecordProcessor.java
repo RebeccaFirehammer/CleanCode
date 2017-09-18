@@ -51,22 +51,6 @@ public class RecordProcessor {
 		pay = new double[inputLength];
 	}
 	
-	public static double getAverageEmployeeAge() {
-		return totalEmployeeAge / firstName.length;
-	}
-	
-	public static double getAverageCommissionPay() {
-		return totalCommissionPay / totalCommissionEmployees;
-	}
-	
-	public static double getAverageHourlyPay() {
-		return totalHourlyPay / totalHourlyEmployees;
-	}
-	
-	public static double getAverageSalaryPay() {
-		return totalSalaryPay / totalSalaryEmployees;
-	}
-	
 	public static void getEmployeeStats() {
 		for(int i = 0; i < firstName.length; i++) {
 			totalEmployeeAge += age[i];
@@ -90,15 +74,22 @@ public class RecordProcessor {
 		stringBufferOutput.append(String.format("Average salary:      $%12.2f\n", getAverageSalaryPay()));
 	}
 	
-	public static void alphabetizeEmployeesByLastname(int recordCount, int employeeNum){
-		for(int i = recordCount; i > employeeNum; i--) {
-			firstName[i] = firstName[i - 1];
-			lastName[i] = lastName[i - 1];
-			age[i] = age[i - 1];
-			employeeType[i] = employeeType[i - 1];
-			pay[i] = pay[i - 1];
-		}
+	public static double getAverageEmployeeAge() {
+		return totalEmployeeAge / firstName.length;
 	}
+	
+	public static double getAverageCommissionPay() {
+		return totalCommissionPay / totalCommissionEmployees;
+	}
+	
+	public static double getAverageHourlyPay() {
+		return totalHourlyPay / totalHourlyEmployees;
+	}
+	
+	public static double getAverageSalaryPay() {
+		return totalSalaryPay / totalSalaryEmployees;
+	}
+	
 	public static void assignEmployeeValues(int employeeNum, String [] employeeValue){
 		firstName[employeeNum] = employeeValue[0];
 		lastName[employeeNum] = employeeValue[1];
@@ -119,9 +110,19 @@ public class RecordProcessor {
 		}	
 		assignEmployeeValues(employeeNum, employeeValue);		
 	}
+	
+	public static void alphabetizeEmployeesByLastname(int recordCount, int employeeNum){
+		for(int i = recordCount; i > employeeNum; i--) {
+			firstName[i] = firstName[i - 1];
+			lastName[i] = lastName[i - 1];
+			age[i] = age[i - 1];
+			employeeType[i] = employeeType[i - 1];
+			pay[i] = pay[i - 1];
+		}
+	}
+	
 	public static void printRows(){
 		stringBufferOutput.append(String.format("# of people imported: %d\n", firstName.length));
-				
 		stringBufferOutput.append(String.format("\n%-30s %s  %-12s %12s\n", "Person Name", "Age", "Emp. Type", "Pay"));
 		for(int i = 0; i < 30; i++)
 			stringBufferOutput.append(String.format("-"));
@@ -138,43 +139,42 @@ public class RecordProcessor {
 		}
 	}
 	
-	public static HashMap<String, Integer> createMap(String [] names){
-		HashMap<String, Integer> hm = new HashMap<String, Integer>();
-		for(int i = 0; i < names.length; i++) {
-			if(hm.containsKey(names[i])) {
-				hm.put(names[i], hm.get(names[i]) + 1);
-			} else {
-				hm.put(names[i], 1);
-			}
-		}
-		return hm;
+	public static void printMatchingNames(){
+		HashMap<String, Integer> firstNameHashMap = createMap(firstName);
+		HashMap<String, Integer> lastNameHashMap = createMap(lastName);
+
+		stringBufferOutput.append(String.format("\nFirst names with more than one person sharing it:\n"));
+		compareMapToArray(firstNameHashMap, firstName);
+
+		stringBufferOutput.append(String.format("\nLast names with more than one person sharing it:\n"));
+		compareMapToArray(lastNameHashMap, lastName);
 	}
 	
-	public static void compareMapToArray(HashMap<String, Integer> hm, String [] names) {
-		if(names.length > hm.size()) {
-			Set<String> set = hm.keySet();
-			for(String str : set) {
-				if(hm.get(str) > 1) {
-					stringBufferOutput.append(String.format("%s, # people with this name: %d\n", str, hm.get(str)));
+	public static HashMap<String, Integer> createMap(String [] names){
+		HashMap<String, Integer> nameHashMap = new HashMap<String, Integer>();
+		for(int i = 0; i < names.length; i++) {
+			if(nameHashMap.containsKey(names[i])) {
+				nameHashMap.put(names[i], nameHashMap.get(names[i]) + 1);
+			} else {
+				nameHashMap.put(names[i], 1);
+			}
+		}
+		return nameHashMap;
+	}
+	
+	public static void compareMapToArray(HashMap<String, Integer> nameHashMap, String [] nameArray) {
+		if(nameArray.length > nameHashMap.size()) {
+			Set<String> uniqueNames = nameHashMap.keySet();
+			for(String name : uniqueNames) {
+				if(nameHashMap.get(name) > 1) {
+					stringBufferOutput.append(String.format("%s, # people with this name: %d\n", name, nameHashMap.get(name)));
 				}
 			}
 		} else { 
 			stringBufferOutput.append(String.format("All first names are unique"));
 		}
 	}
-	public static void printMultipleFirstNames(){
-		HashMap<String, Integer> firstNameHashMap = createMap(firstName);
 
-		stringBufferOutput.append(String.format("\nFirst names with more than one person sharing it:\n"));
-		compareMapToArray(firstNameHashMap, firstName);
-	}
-	public static void printMultipleLastnames(){
-		HashMap<String, Integer> lastNameHashMap = createMap(lastName);
-
-		stringBufferOutput.append(String.format("\nLast names with more than one person sharing it:\n"));
-		compareMapToArray(lastNameHashMap, lastName);
-	}
-	
 	public static String processFile(String fileInput) {
 		readInFile(fileInput);
 		initializeEmployeeValues();
@@ -204,8 +204,7 @@ public class RecordProcessor {
 		printRows();
 		getEmployeeStats();
 		printEmployeeStats();
-		printMultipleFirstNames();
-		printMultipleLastnames();
+		printMatchingNames();
 		
 		//close the file
 		scanner.close();
