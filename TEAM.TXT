@@ -1,6 +1,6 @@
-This assignment took me/us x hours
+This assignment took us 15 hours
 
 List team member names below. If not team member names, grader will assume solo work.
-Rebecca Firehammer
-Marcus Jackson
-Eriq Tobias
+Rebecca Firehammer	5hrs
+Marcus Jackson		5hrs
+Eriq Tobias			5hrs
