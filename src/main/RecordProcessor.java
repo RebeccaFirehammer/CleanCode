@@ -138,6 +138,31 @@ public class RecordProcessor {
 		}
 	}
 	
+	public static HashMap<String, Integer> createMap(String [] names){
+		HashMap<String, Integer> hm = new HashMap<String, Integer>();
+		for(int i = 0; i < names.length; i++) {
+			if(hm.containsKey(names[i])) {
+				hm.put(names[i], hm.get(names[i]) + 1);
+			} else {
+				hm.put(names[i], 1);
+			}
+		}
+		return hm;
+	}
+	
+	public static void compareMapToArray(HashMap<String, Integer> hm, String [] names) {
+		if(names.length > hm.size()) {
+			Set<String> set = hm.keySet();
+			for(String str : set) {
+				if(hm.get(str) > 1) {
+					stringBuffer.append(String.format("%s, # people with this name: %d\n", str, hm.get(str)));
+				}
+			}
+		} else { 
+			stringBuffer.append(String.format("All first names are unique"));
+		}
+	}
+	
 	public static String processFile(String fileInput) {
 		readInFile(fileInput);
 		initializeEmployeeValues();
@@ -169,51 +194,15 @@ public class RecordProcessor {
 		getEmployeeStats();
 		printEmployeeStats();
 		
-		HashMap<String, Integer> hm = new HashMap<String, Integer>();
-		int c1 = 0;
-		for(int i = 0; i < firstName.length; i++) {
-			if(hm.containsKey(firstName[i])) {
-				hm.put(firstName[i], hm.get(firstName[i]) + 1);
-				c1++;
-			} else {
-				hm.put(firstName[i], 1);
-			}
-		}
+		HashMap<String, Integer> hm = createMap(firstName);
 
 		stringBuffer.append(String.format("\nFirst names with more than one person sharing it:\n"));
-		if(c1 > 0) {
-			Set<String> set = hm.keySet();
-			for(String str : set) {
-				if(hm.get(str) > 1) {
-					stringBuffer.append(String.format("%s, # people with this name: %d\n", str, hm.get(str)));
-				}
-			}
-		} else { 
-			stringBuffer.append(String.format("All first names are unique"));
-		}
+		compareMapToArray(hm, firstName);
 
-		HashMap<String, Integer> hm2 = new HashMap<String, Integer>();
-		int c21 = 0;
-		for(int i = 0; i < lastName.length; i++) {
-			if(hm2.containsKey(lastName[i])) {
-				hm2.put(lastName[i], hm2.get(lastName[i]) + 1);
-				c21++;
-			} else {
-				hm2.put(lastName[i], 1);
-			}
-		}
+		HashMap<String, Integer> hm2 = createMap(lastName);
 
 		stringBuffer.append(String.format("\nLast names with more than one person sharing it:\n"));
-		if(c21 > 0) {
-			Set<String> set = hm2.keySet();
-			for(String str : set) {
-				if(hm2.get(str) > 1) {
-					stringBuffer.append(String.format("%s, # people with this name: %d\n", str, hm2.get(str)));
-				}
-			}
-		} else { 
-			stringBuffer.append(String.format("All last names are unique"));
-		}
+		compareMapToArray(hm2, lastName);
 		
 		//close the file
 		scanner.close();
