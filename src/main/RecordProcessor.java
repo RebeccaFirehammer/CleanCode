@@ -15,7 +15,6 @@ public class RecordProcessor {
 	private static double [] pay;
 	private static StringBuffer stringBuffer = new StringBuffer();
 	private static Scanner scanner;
-	private static int count = 0;
 	
 	private static int totalEmployeeAge = 0;
 	private static int totalCommissionEmployees = 0;
@@ -83,61 +82,68 @@ public class RecordProcessor {
 			}
 		}
 	}
-
+	
 	public static void printEmployeeStats() {
 		stringBuffer.append(String.format("\nAverage age:         %12.1f\n", getAverageEmployeeAge()));
 		stringBuffer.append(String.format("Average commission:  $%12.2f\n", getAverageCommissionPay()));
 		stringBuffer.append(String.format("Average hourly wage: $%12.2f\n", getAverageHourlyPay()));
 		stringBuffer.append(String.format("Average salary:      $%12.2f\n", getAverageSalaryPay()));
 	}
-
+	
+	public static void alphabetizeEmployeesByLastname(int recordCount, int employeeNum){
+		for(int i = recordCount; i > employeeNum; i--) {
+			firstName[i] = firstName[i - 1];
+			lastName[i] = lastName[i - 1];
+			age[i] = age[i - 1];
+			employeeType[i] = employeeType[i - 1];
+			pay[i] = pay[i - 1];
+		}
+	}
+	public static void assignEmployeeValues(int employeeNum, String [] employeeValue){
+		firstName[employeeNum] = employeeValue[0];
+		lastName[employeeNum] = employeeValue[1];
+		employeeType[employeeNum] = employeeValue[3];
+		age[employeeNum] = Integer.parseInt(employeeValue[2]);
+		pay[employeeNum] = Double.parseDouble(employeeValue[4]);
+	}
+	public static void siftLastnames(int recordCount, String [] employeeValue ){
+		int employeeNum;
+				
+		for(employeeNum = 0; employeeNum < lastName.length; employeeNum++) {
+			if(lastName[employeeNum] == null)
+				break;
+			if(lastName[employeeNum].compareTo(employeeValue[1]) > 0) {
+				alphabetizeEmployeesByLastname(recordCount, employeeNum);
+				break;
+			}
+		}	
+		assignEmployeeValues(employeeNum, employeeValue);		
+	}
 	
 	public static String processFile(String fileInput) {
 		readInFile(fileInput);
 		initializeEmployeeValues();
 		
 		readInFile(fileInput);
-
-		int recordCount = 0;
-		while(scanner.hasNextLine()) {
-			String lineInput = scanner.nextLine();
-			if(lineInput.length() > 0) {
-				String [] employeeValue = lineInput.split(",");
-				int employeeNum;
-				
-				for(employeeNum = 0; employeeNum < lastName.length; employeeNum++) {
-					if(lastName[employeeNum] == null)
-						break;
-					if(lastName[employeeNum].compareTo(employeeValue[1]) > 0) {
-						for(int i = recordCount; i > employeeNum; i--) {
-							firstName[i] = firstName[i - 1];
-							lastName[i] = lastName[i - 1];
-							age[i] = age[i - 1];
-							employeeType[i] = employeeType[i - 1];
-							pay[i] = pay[i - 1];
-						}
-						break;
-					}
+		try{
+			int recordCount = 0;
+			while(scanner.hasNextLine()) {
+				String lineInput = scanner.nextLine();
+				if(lineInput.length() > 0) {
+					String [] employeeValue = lineInput.split(",");
+					siftLastnames(recordCount, employeeValue);
+					
+					recordCount++;
 				}
-				
-				firstName[employeeNum] = employeeValue[0];
-				lastName[employeeNum] = employeeValue[1];
-				employeeType[employeeNum] = employeeValue[3];
-
-				try {
-					age[employeeNum] = Integer.parseInt(employeeValue[2]);
-					pay[employeeNum] = Double.parseDouble(employeeValue[4]);
-				} catch(Exception e) {
-					System.err.println(e.getMessage());
-					scanner.close();
-					return null;
-				}
-				
-				recordCount++;
 			}
-		}
-		if(recordCount == 0) {
-			System.err.println("No records found in data file");
+			if(recordCount == 0) {
+				System.err.println("No records found in data file");
+				scanner.close();
+				return null;
+			}
+			//setEmployeeValues();
+		}catch(Exception e){
+			System.err.println(e.getMessage());
 			scanner.close();
 			return null;
 		}
