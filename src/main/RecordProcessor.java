@@ -15,6 +15,15 @@ public class RecordProcessor {
 	private static double [] pay;
 	private static StringBuffer stringBuffer = new StringBuffer();
 	private static Scanner scanner;
+	private static int count = 0;
+	
+	private static int totalEmployeeAge = 0;
+	private static int totalCommissionEmployees = 0;
+	private static double totalCommissionPay = 0;
+	private static int totalHourlyEmployees = 0;
+	private static double totalHourlyPay = 0;
+	private static int totalSalaryEmployees = 0;
+	private static double totalSalaryPay = 0;
 		
 	public static void readInFile(String fileInput){
 		try {
@@ -42,9 +51,46 @@ public class RecordProcessor {
 		employeeType = new String[inputLength];
 		pay = new double[inputLength];
 	}
-	public static void recordExists(){
-		
+	
+	public static double getAverageEmployeeAge() {
+		return totalEmployeeAge / firstName.length;
 	}
+	
+	public static double getAverageCommissionPay() {
+		return totalCommissionPay / totalCommissionEmployees;
+	}
+	
+	public static double getAverageHourlyPay() {
+		return totalHourlyPay / totalHourlyEmployees;
+	}
+	
+	public static double getAverageSalaryPay() {
+		return totalSalaryPay / totalSalaryEmployees;
+	}
+	
+	public static void getEmployeeStats() {
+		for(int i = 0; i < firstName.length; i++) {
+			totalEmployeeAge += age[i];
+			if(employeeType[i].equals("Commission")) {
+				totalCommissionPay += pay[i];
+				totalCommissionEmployees++;
+			} else if(employeeType[i].equals("Hourly")) {
+				totalHourlyPay += pay[i];
+				totalHourlyEmployees++;
+			} else if(employeeType[i].equals("Salary")) {
+				totalSalaryPay += pay[i];
+				totalSalaryEmployees++;
+			}
+		}
+	}
+
+	public static void printEmployeeStats() {
+		stringBuffer.append(String.format("\nAverage age:         %12.1f\n", getAverageEmployeeAge()));
+		stringBuffer.append(String.format("Average commission:  $%12.2f\n", getAverageCommissionPay()));
+		stringBuffer.append(String.format("Average hourly wage: $%12.2f\n", getAverageHourlyPay()));
+		stringBuffer.append(String.format("Average salary:      $%12.2f\n", getAverageSalaryPay()));
+	}
+
 	
 	public static String processFile(String fileInput) {
 		readInFile(fileInput);
@@ -115,38 +161,8 @@ public class RecordProcessor {
 				, employeeType[i], pay[i]));
 		}
 		
-		int sum1 = 0;
-		float avg1 = 0f;
-		int c2 = 0;
-		double sum2 = 0;
-		double avg2 = 0;
-		int c3 = 0;
-		double sum3 = 0;
-		double avg3 = 0;
-		int c4 = 0;
-		double sum4 = 0;
-		double avg4 = 0;
-		for(int i = 0; i < firstName.length; i++) {
-			sum1 += age[i];
-			if(employeeType[i].equals("Commission")) {
-				sum2 += pay[i];
-				c2++;
-			} else if(employeeType[i].equals("Hourly")) {
-				sum3 += pay[i];
-				c3++;
-			} else if(employeeType[i].equals("Salary")) {
-				sum4 += pay[i];
-				c4++;
-			}
-		}
-		avg1 = (float) sum1 / firstName.length;
-		stringBuffer.append(String.format("\nAverage age:         %12.1f\n", avg1));
-		avg2 = sum2 / c2;
-		stringBuffer.append(String.format("Average commission:  $%12.2f\n", avg2));
-		avg3 = sum3 / c3;
-		stringBuffer.append(String.format("Average hourly wage: $%12.2f\n", avg3));
-		avg4 = sum4 / c4;
-		stringBuffer.append(String.format("Average salary:      $%12.2f\n", avg4));
+		getEmployeeStats();
+		printEmployeeStats();
 		
 		HashMap<String, Integer> hm = new HashMap<String, Integer>();
 		int c1 = 0;
