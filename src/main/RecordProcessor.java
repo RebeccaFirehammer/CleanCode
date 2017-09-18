@@ -159,7 +159,6 @@ public class RecordProcessor {
 				scanner.close();
 				return null;
 			}
-			//setEmployeeValues();
 		}catch(Exception e){
 			System.err.println(e.getMessage());
 			scanner.close();
